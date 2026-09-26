@@ -4,42 +4,43 @@
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="crehwRvv3FsKxCFfgVztVa5TDKTArhq9deHWN6scXVQ">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090909">
+<meta name="theme-color" content="#241815">
 <title>Zuki Word Of The Day</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="background"></div>
-<div class="background-overlay"></div>
+<div class="paper-texture" aria-hidden="true"></div>
+<div class="photo-wash" aria-hidden="true"></div>
 <img class="zuki-sprite" id="zuki-sprite" src="zuki-sprite.png" alt="Cute Zuki-style character sprite">
-<div class="sprite-hint" aria-hidden="true">drag me • pinch me</div>
-<main class="app-shell">
-<section class="word-card">
-<header class="brand">
-<div><p class="brand-name">Zuki</p><p class="brand-subtitle">WORD OF THE DAY</p></div>
-</header>
-<div class="divider"></div>
-
-<div class="word-panel" id="word-display" aria-live="polite">
-<p class="date-label" id="date-label">TODAY</p>
-<p class="placeholder">Press the button to reveal today's word.</p>
-</div>
-
-<button id="generate-btn" class="generate-btn" type="button">
-<span>Generate Word</span><span class="button-arrow">↗</span>
-</button>
-
-<section class="about-zuki">
-<h2>About Zuki</h2>
-<p>Zuki is a young Japanese artist and creator known online for her artwork, manga projects, gaming, and creative work. Her community often describes her as exceptionally talented, humble, and passionate about art and different cultures.</p>
-</section>
-
-<p class="footer-note">Definitions and pronunciations provided by Dictionary API</p>
-<p class="watermark">made by r0ughman👀 also LLZ</p>
-</section>
+<div class="sprite-hint" aria-hidden="true">drag • pinch • bonk</div>
+<main class="editorial-page">
+  <div class="margin-mark" aria-hidden="true"><span>ZWOTD</span><i></i><span>NO. 001</span></div>
+  <section class="spread">
+    <header class="masthead">
+      <div class="brand-lockup"><div class="brand-name">Zuki</div><div class="brand-subtitle">WORD OF THE DAY</div></div>
+      <div class="issue-note">a tiny vocabulary ritual<br><span>for absolutely no reason</span></div>
+    </header>
+    <div class="intro-block">
+      <p class="eyebrow">ONE WORD · EVERY DAY</p>
+      <h1><span>WORD</span><br><em>OF THE DAY</em></h1>
+      <p class="intro-copy">A slightly unnecessary excuse to learn a very fancy word.</p>
+    </div>
+    <div class="word-stage">
+      <div class="stage-index">TODAY / <span id="date-label">TODAY</span></div>
+      <div class="word-panel" id="word-display" aria-live="polite"><p class="placeholder">Press the button. You know you want to.</p></div>
+      <button id="generate-btn" class="generate-btn" type="button"><span>Give me a word</span><span class="button-arrow">↗</span></button>
+    </div>
+    <aside class="side-note"><span class="side-label">FIELD NOTE</span><p>Long words. Tiny website. Questionable priorities.</p></aside>
+    <section class="about-zuki">
+      <p class="about-kicker">A LITTLE CONTEXT</p>
+      <h2>About Zuki</h2>
+      <p>Zuki is a young Japanese artist and creator known online for her artwork, manga projects, gaming, and creative work. Her community often describes her as exceptionally talented, humble, and passionate about art and different cultures.</p>
+    </section>
+    <footer class="site-footer"><p class="footer-note">Definitions and pronunciations provided by Dictionary API</p><p class="watermark">made by r0ughman👀 also LLZ</p></footer>
+  </section>
 </main>
 <script src="script.js"></script>
 </body>
