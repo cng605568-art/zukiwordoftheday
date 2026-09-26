@@ -81,3 +81,134 @@ async function generateWord(){
 
 dateLabel.textContent=formatToday();
 generateButton.addEventListener("click",generateWord);
+
+
+// Draggable + pinch-to-zoom sprite with a little wobbly motion.
+(() => {
+  const sprite = document.getElementById("zuki-sprite");
+  if (!sprite) return;
+
+  const pointers = new Map();
+  let mode = "idle";
+  let startX = 0, startY = 0;
+  let originX = 0, originY = 0;
+  let startDistance = 0, startScale = 1;
+  let lastX = 0, lastY = 0, lastTime = 0;
+  let wobble = 0;
+  let wobbleVelocity = 0;
+  let scale = 1;
+  let offsetX = 0;
+  let offsetY = 0;
+
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+
+  function centerOfTwo(a, b) {
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  }
+
+  function render() {
+    sprite.style.setProperty("--sprite-x", `${offsetX}px`);
+    sprite.style.setProperty("--sprite-y", `${offsetY}px`);
+    sprite.style.setProperty("--sprite-scale", scale.toFixed(3));
+    sprite.style.setProperty("--sprite-wobble", `${wobble.toFixed(2)}deg`);
+  }
+
+  function animateWobble() {
+    // Spring back toward a relaxed angle after dragging.
+    wobbleVelocity += (-wobble * 0.16);
+    wobbleVelocity *= 0.82;
+    wobble += wobbleVelocity;
+    if (Math.abs(wobble) > 0.01 || Math.abs(wobbleVelocity) > 0.01) render();
+    requestAnimationFrame(animateWobble);
+  }
+  animateWobble();
+
+  function beginDrag(point) {
+    mode = "drag";
+    startX = point.x;
+    startY = point.y;
+    originX = offsetX;
+    originY = offsetY;
+    lastX = point.x;
+    lastY = point.y;
+    lastTime = performance.now();
+    sprite.classList.add("dragging");
+  }
+
+  function beginPinch() {
+    const [a, b] = [...pointers.values()];
+    startDistance = distance(a, b);
+    startScale = scale;
+    const center = centerOfTwo(a, b);
+    startX = center.x;
+    startY = center.y;
+    originX = offsetX;
+    originY = offsetY;
+    mode = "pinch";
+  }
+
+  sprite.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    sprite.setPointerCapture?.(event.pointerId);
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (pointers.size === 1) {
+      beginDrag({ x: event.clientX, y: event.clientY });
+    } else if (pointers.size === 2) {
+      beginPinch();
+    }
+  });
+
+  sprite.addEventListener("pointermove", (event) => {
+    if (!pointers.has(event.pointerId)) return;
+    event.preventDefault();
+    pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+    if (pointers.size >= 2) {
+      if (mode !== "pinch") beginPinch();
+      const [a, b] = [...pointers.values()];
+      const center = centerOfTwo(a, b);
+      const ratio = startDistance ? distance(a, b) / startDistance : 1;
+      scale = clamp(startScale * ratio, 0.45, 3.2);
+      offsetX = originX + (center.x - startX);
+      offsetY = originY + (center.y - startY);
+      wobble = clamp((a.x - b.x) * 0.015, -7, 7);
+      render();
+      return;
+    }
+
+    if (pointers.size === 1 && mode === "drag") {
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      offsetX = originX + dx;
+      offsetY = originY + dy;
+
+      const now = performance.now();
+      const dt = Math.max(8, now - lastTime);
+      const vx = (event.clientX - lastX) / dt;
+      wobbleVelocity += clamp(vx * 1.9, -2.8, 2.8);
+      wobble = clamp(wobble + vx * 0.7, -10, 10);
+      lastX = event.clientX;
+      lastY = event.clientY;
+      lastTime = now;
+      render();
+    }
+  });
+
+  function endPointer(event) {
+    pointers.delete(event.pointerId);
+    try { sprite.releasePointerCapture?.(event.pointerId); } catch {}
+
+    if (pointers.size === 0) {
+      mode = "idle";
+      sprite.classList.remove("dragging");
+    } else if (pointers.size === 1) {
+      const [remaining] = pointers.values();
+      beginDrag(remaining);
+    }
+  }
+
+  sprite.addEventListener("pointerup", endPointer);
+  sprite.addEventListener("pointercancel", endPointer);
+})();
